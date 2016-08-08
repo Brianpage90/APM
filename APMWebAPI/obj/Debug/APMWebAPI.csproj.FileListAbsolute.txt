@@ -158,3 +158,4 @@ C:\Users\CPP\Desktop\PluralSight_Projects\APM\APMWebAPI\bin\zh-Hans\System.Spati
 C:\Users\CPP\Desktop\PluralSight_Projects\APM\APMWebAPI\bin\zh-Hant\System.Spatial.resources.dll
 C:\Users\CPP\Desktop\PluralSight_Projects\APM\APMWebAPI\obj\Debug\APMWebAPI.dll
 C:\Users\CPP\Desktop\PluralSight_Projects\APM\APMWebAPI\obj\Debug\APMWebAPI.pdb
+C:\Users\CPP\Desktop\PluralSight_Projects\APM\APMWebAPI\obj\Debug\APMWebAPI.csprojResolveAssemblyReference.cache

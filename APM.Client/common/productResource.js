@@ -11,7 +11,7 @@
     function productResource($resource, appSettings) {
         return $resource(appSettings.serverPath + "/api/products/:id", null,
             {
-                'update': { method: 'PUT' }
+                'update':{ method: 'PUT' }
             });
     }
 }());

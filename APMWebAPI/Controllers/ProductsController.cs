@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.Description;
 using System.Web.OData;
 
 namespace APMWebAPI.Controllers
@@ -15,68 +16,106 @@ namespace APMWebAPI.Controllers
     {
         // GET: api/Products
         [EnableQuery()]
+        [ResponseType(typeof(Product))]
         public IHttpActionResult Get()
         {
-            var productRepository = new ProductRepository();
-            return Ok(productRepository.Retrieve().AsQueryable());
+            try
+            { 
+                var productRepository = new ProductRepository();
+                return Ok(productRepository.Retrieve().AsQueryable());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         // GET: api/Products/5
         public IHttpActionResult Get(int id)
         {
-            Product product;
-            var productRepository = new ProductRepository();
+            try
+            {
+                //throw new ArgumentNullException("This is a test");
+                Product product;
+                var productRepository = new ProductRepository();
 
-            if (id > 0)
-            {
-                var products = productRepository.Retrieve();
-                product = products.FirstOrDefault(p => p.ProductId == id);
-                Console.Out.WriteLine("hello");
-                if (product == null)
+                if (id > 0)
                 {
-                    Console.Out.WriteLine(product);
-                    return NotFound();
+                    var products = productRepository.Retrieve();
+                    product = products.FirstOrDefault(p => p.ProductId == id);
+
+                    if (product == null)
+                    {
+                        return NotFound();
+                    }
                 }
+                else
+                {
+                    product = productRepository.Create();
+                }
+                return Ok(product);
             }
-            else
+            catch (Exception ex)
             {
-                product = productRepository.Create();
+                return InternalServerError(ex);
             }
-            return Ok(product);
         }
 
         // POST: api/Products
         public IHttpActionResult Post([FromBody]Product product)
         {
-            if (product == null)
+            try
             {
-                return BadRequest("Product cannot be null");
+                if (product == null)
+                {
+                    return BadRequest("Product cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var productRepository = new ProductRepository();
+                var newProduct = productRepository.Save(product);
+                if (newProduct == null)
+                {
+                    return Conflict();
+                }
+                return Created<Product>(Request.RequestUri + newProduct.ProductId.ToString(),
+                    newProduct);
             }
-            var productRepository = new ProductRepository();
-            var newProduct = productRepository.Save(product);
-            if (newProduct == null)
+            catch (Exception ex)
             {
-                return Conflict();
+                return InternalServerError(ex);
             }
-            return Created<Product>(Request.RequestUri + newProduct.ProductId.ToString(),
-                newProduct);
         }
 
         // PUT: api/Products/5
         public IHttpActionResult Put(int id, [FromBody]Product product)
         {
-            if (product == null)
+            try
             {
-                return BadRequest("Product cannot be null");
-            }
-            var productRepository = new ProductRepository();
-            var updatedProduct = productRepository.Save(id, product);
-            if (updatedProduct == null)
-            {
-                return NotFound();
-            }
+                if (product == null)
+                {
+                    return BadRequest("Product cannot be null");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var productRepository = new ProductRepository();
+                var updatedProduct = productRepository.Save(id, product);
+                if (updatedProduct == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
 
         }
 
