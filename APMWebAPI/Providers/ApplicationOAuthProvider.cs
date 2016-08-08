@@ -33,6 +33,9 @@ namespace APMWebAPI.Providers
 
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
 
+            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin",
+                new[] { "http://localhost:53608"});
+
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
